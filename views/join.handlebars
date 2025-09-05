@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아이소포더</title>
+  {{> index_css}}
+</head>
+<body>
+{{> header}}
+<hr>
+<div id="category">{{> category}}</div>
+
+<div id="main">
+
+    <h2>가입</h2>
+
+  <form action="join_ok" method="post">
+닉네임: <input type="text" name="name" id="name"><br>
+아이디: <input type="text" name="id" id="id"><br>
+이메일: <input type="email" name="email" id="email"><br>
+비번: <input type="password" name="pw" id="pw"><br>
+비번확인: <input type="password" name="pw_check" id="pw_check"><br>
+    <input type="submit" value="로그인">
+  </form>
+</div>
+{{> index_js}}
+</body>
+</html>

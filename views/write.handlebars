@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아이소포더</title>
+  {{> index_css}}
+</head>
+<body>
+{{> header}}
+<hr>
+<div id="category" style="font-size:1.7rem;text-align:center;">
+
+{{> category}}
+
+
+</div>
+
+<div id="main" style="font-size:1.2rem;text-align:center;">
+
+
+
+<div ="write">
+
+  <h2>자유게시판-글쓰기</h2>
+
+<form action="/write_ok" method="post">
+
+제목: <input type="text" name="title" id="title" size="30"><br>
+작성자: <input type="text" readonly="true" value="{{myname}}" name="writer" id="writer"><br>
+내용: <textarea name="content" id="content" cols="80" rows="30"></textarea>
+<input type="submit" value="업로드">
+</form>
+
+</div>
+
+
+
+
+</div>
+{{> index_js}}
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>아이소포더</title>
+  {{> index_css}}
+<script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+</head>
+<body>
+{{> header}}
+<hr>
+<div id="category" style="font-size:1.7rem;text-align:center;">
+
+{{> category}}
+
+
+</div>
+
+<div id="main" style="font-size:1.2rem;text-align:center;">
+
+
+
+<div ="board">
+  {{#ifEq myname writer}}
+<a style="color: red; float:right;" class="content_delete">삭제</a><br>{{else}}{{/ifEq}}
+  <h2>자유게시판</h2> <br>
+  <hr>
+  <h2>{{title}}</h2>
+  <h5>작성자: {{writer}} 게시날짜:{{date}}  조회수:{{hit}}</h5><br>
+  <hr>
+  <h5>
+    {{content}}
+  </h5><br><br><br>
+
+  <img src="/images/gaechu.png"width="30px" height="30px" class="gaechu" />{{like}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/images/beechu.png"width="30px" height="30px" class="beechu"/>{{bad}}
+
+
+</div>
+<hr>
+<h3>댓글</h3><br>
+<div class="comments">
+
+
+
+{{#each comment}}
+<div class="comment" id="{{id}}"> 
+<b class="writer">{{writer}}</b>&nbsp;&nbsp;&nbsp;<b class="date">{{date}}</b>{{#ifEq writer ../myname}} <a style="color: red;" class="comment_delete">삭제</a>{{else}}{{/ifEq}} <br> 
+<div class="content">
+{{comment}}
+</div>
+</div><br>
+{{/each}}
+
+<form action="/comment_ok" id="comment_form" method="get">
+<input type="hidden" name="board" value="free">
+<input type="hidden" name="id" id="id" value="">
+<input type="hidden" name="name" id="name" value="{{myname}}">
+    <textarea name="comment" rows="4" cols="75" id="comment"></textarea>
+    <input type="submit" value="댓글쓰기"><br>
+</form>
+
+</div>
+
+</div>
+  <script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+      var id = window.location.pathname.split("/");
+        id = id[id.length-1];
+        document.querySelector("form#comment_form input#id").value = id;
+ var gaechu = document.getElementsByClassName("gaechu")[0];
+      var beechu = document.getElementsByClassName("beechu")[0];
+      var comment_delete;
+      var content_delete;
+
+      const comments = document.querySelectorAll("div.cmment");
+var delete_comment_idx;
+comments.forEach((el, i) => {
+  el.addEventListener("click", () => {
+    delete_comment_idx=i;
+  });
+  
+  });
+
+
+      if(document.querySelector("div.comments")==null){
+              
+      }else{
+        comment_delete = document.querySelector("div.comments");
+      }
+
+       if(document.querySelector(".content_delete")==null){
+              
+      }else{
+        content_delete = document.querySelector(".content_delete");
+
+        content_delete.addEventListener("click", ()=>{
+  fetch("/content_delete",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({board:"free",writing_id:id})
+  }).then(
+      res => res.json()
+    ).then(
+      data=>{
+        if(data.success){
+          location.href="/board/free";
+        }else{
+          alert(data.message);
+        }
+      }
+    );
+});
+      }
+
+
+
+
+
+comment_delete.addEventListener("click",(e)=>{
+  if(e.target.matches(".comment_delete")){
+    const comment_id = e.target.parentElement.id;
+  
+    fetch("/comment_delete",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({comment_id:comment_id,board:"free",writing_id:id,comment_idx:delete_comment_idx})
+    }).then(
+      res => res.json()
+    ).then(
+      data=>{
+        if(data.success){
+          location.reload();
+        }else{
+          alert(data.message);
+        }
+      }
+    );
+  }
+});
+
+$("#comment_form #id").val(id);
+      gaechu.addEventListener("click",()=>{
+        
+        fetch("/board/free/"+id,{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({contentId:id,mode:"gaechu"})
+        }).then(res => res.json())
+    .then(data => {
+   
+      if (data.success) {
+       location.reload();
+      } else {
+        alert(data.message);
+      }
+    });
+      } );
+
+     beechu.addEventListener("click",()=>{
+ 
+        fetch("/board/free/"+id,{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({contentId:id,mode:"beechu"})
+        }).then(res => res.json())
+    .then(data => {
+   
+      if (data.success) {
+location.reload();
+      } else {
+        alert(data.message);
+      }
+    });
+      } );
+</script>
+{{> index_js}}
+</body>
+</html>
